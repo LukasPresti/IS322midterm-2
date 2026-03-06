@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lukas | Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="portfolio-body">
+    <div class="background-effects">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo">Lukas.</div>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#projects">Projects</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <main class="portfolio-main">
+        <section id="hero" class="hero-section">
+            <div class="hero-content fade-in">
+                <h1>Hi, I'm <span class="highlight">Lukas</span></h1>
+                <p class="subtitle">I build intelligent, creative, and powerful web experiences.</p>
+                <div class="hero-actions">
+                    <a href="#projects" class="btn primary-btn btn-large">View My Work</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="projects-section">
+            <h2 class="section-title fade-in">Featured Projects</h2>
+
+            <div class="project-grid">
+                <!-- Highlighted AI Builder Project -->
+                <div class="project-card glass-panel fade-in">
+                    <div class="project-info">
+                        <div class="project-tags">
+                            <span class="tag ai-tag">AI</span>
+                            <span class="tag web-tag">Web</span>
+                        </div>
+                        <h3>Voice-to-Website Builder</h3>
+                        <p>A cutting-edge, serverless tool that leverages OpenAI Whisper and GPT-4o to dynamically
+                            generate and deploy fully functional, styled web pages directly to GitHub Pages using only
+                            your voice instructions.</p>
+
+                        <div class="project-actions">
+                            <a href="builder.html" class="btn primary-btn launch-btn">
+                                Launch App
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Placeholder Project -->
+                <div class="project-card glass-panel fade-in">
+                    <div class="project-info">
+                        <div class="project-tags">
+                            <span class="tag ecom-tag">E-Commerce</span>
+                        </div>
+                        <h3>NatureMart</h3>
+                        <p>A responsive, comprehensive e-commerce platform designed for all-natural products, featuring
+                            detailed product listings and an intuitive cart system.</p>
+                        <div class="project-actions">
+                            <a href="#" class="btn secondary-btn">Coming Soon</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Lukas. IS322 Midterm.</p>
+    </footer>
+
+    <script>
+        // Simple scroll animation observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+</body>
+
+</html>
