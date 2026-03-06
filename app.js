@@ -3,10 +3,10 @@
 // ==========================================
 // Variables will be populated from the UI Modal to avoid hardcoding secrets.
 
-let OPENAI_API_KEY = "";
-let GITHUB_PAT = "";
-let GITHUB_REPO_OWNER = "";
-let GITHUB_REPO_NAME = "";
+let OPENAI_API_KEY = sessionStorage.getItem("openai_key") || "";
+let GITHUB_PAT = sessionStorage.getItem("github_pat") || "";
+let GITHUB_REPO_OWNER = sessionStorage.getItem("github_owner") || "LukasPresti";
+let GITHUB_REPO_NAME = sessionStorage.getItem("github_repo") || "is322Midterm";
 // The specific folder where the generated websites will be pushed. 
 const GITHUB_TARGET_FOLDER = "projects";
 
@@ -26,18 +26,47 @@ const saveConfigBtn = document.getElementById("save-config-btn");
 
 let mediaRecorder;
 let audioChunks = [];
-
+let currentEditSha = null;
+let currentEditFilename = null;
+let currentEditContent = null;
 
 // ==========================================
 // APP INITIALIZATION & CONFIGURATION
 // ==========================================
 // Ensure this script only runs if we are on the builder page
 if (configModal) {
-    window.addEventListener('DOMContentLoaded', () => {
-        configModal.classList.add('active');
+    window.addEventListener('DOMContentLoaded', async () => {
+        // Pre-fill modal with session storage
+        if (OPENAI_API_KEY) document.getElementById('openai-key').value = OPENAI_API_KEY;
+        if (GITHUB_PAT) document.getElementById('github-pat').value = GITHUB_PAT;
+        if (GITHUB_REPO_OWNER) document.getElementById('github-owner').value = GITHUB_REPO_OWNER;
+        if (GITHUB_REPO_NAME) document.getElementById('github-repo').value = GITHUB_REPO_NAME;
+
+        // Check if we are in "Edit Mode"
+        const urlParams = new URLSearchParams(window.location.search);
+        const editFile = urlParams.get('edit');
+
+        if (editFile) {
+            currentEditFilename = editFile;
+            document.querySelector('.builder-header h1').innerHTML = `Updating: <span class="highlight">${editFile}</span>`;
+            document.querySelector('.builder-header p').textContent = "Describe how the AI should modify this existing website.";
+
+            // If we have API keys already, try to fetch the file immediately
+            if (OPENAI_API_KEY && GITHUB_PAT) {
+                await loadExistingFile();
+            } else {
+                configModal.classList.add('active');
+            }
+        } else {
+            if (!OPENAI_API_KEY || !GITHUB_PAT) {
+                configModal.classList.add('active');
+            } else {
+                logStatus("System ready. Waiting for instructions...");
+            }
+        }
     });
 
-    saveConfigBtn.addEventListener('click', () => {
+    saveConfigBtn.addEventListener('click', async () => {
         OPENAI_API_KEY = document.getElementById('openai-key').value.trim();
         GITHUB_PAT = document.getElementById('github-pat').value.trim();
         GITHUB_REPO_OWNER = document.getElementById('github-owner').value.trim();
@@ -48,11 +77,57 @@ if (configModal) {
             return;
         }
 
+        // Save to session 
+        sessionStorage.setItem("openai_key", OPENAI_API_KEY);
+        sessionStorage.setItem("github_pat", GITHUB_PAT);
+        sessionStorage.setItem("github_owner", GITHUB_REPO_OWNER);
+        sessionStorage.setItem("github_repo", GITHUB_REPO_NAME);
+
         configModal.classList.remove('active');
-        logStatus("System ready. Waiting for instructions...");
+
+        if (currentEditFilename) {
+            await loadExistingFile();
+        } else {
+            logStatus("System ready. Waiting for instructions...");
+        }
     });
 }
 
+
+// ==========================================
+// UTILITY: FETCH EXISTING FILE
+// ==========================================
+async function loadExistingFile() {
+    logStatus(`Fetching existing project: ${currentEditFilename}...`);
+    try {
+        const path = `${GITHUB_TARGET_FOLDER}/${currentEditFilename}`;
+        const apiUrl = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${path}`;
+
+        const response = await fetch(apiUrl, {
+            headers: {
+                "Authorization": `token ${GITHUB_PAT}`,
+                "Accept": "application/vnd.github.v3+json"
+            }
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch existing file from GitHub.");
+
+        const data = await response.json();
+        currentEditSha = data.sha; // Save SHA needed for updating
+
+        // Decode base64 content
+        currentEditContent = decodeURIComponent(escape(atob(data.content)));
+
+        // Render to preview
+        const previewFrame = document.getElementById("preview-frame");
+        previewFrame.srcdoc = currentEditContent;
+
+        logStatus(`File loaded successfully. Awaiting modification instructions.`);
+
+    } catch (err) {
+        logStatus(`Error: ${err.message}`);
+    }
+}
 
 // ==========================================
 // UTILITY: LOGGING
@@ -188,7 +263,7 @@ async function transcribeAudio(audioBlob) {
 // PIPELINE 3: AI WEB BUILDER (OpenAI GPT-4o)
 // ==========================================
 async function buildWebsiteHTML(transcriptText) {
-    const systemPrompt = `You are an Expert Full-Stack Web Developer. 
+    let systemPrompt = `You are an Expert Full-Stack Web Developer. 
 Your objective is to take the user's spoken instructions and build a complete, fully functional, beautifully styled, single-file HTML website.
 
 Requirements for your output:
@@ -197,6 +272,21 @@ Requirements for your output:
 3. It MUST include embedded <script> tags for any javascript functionality requested (e.g. if they ask for a calculator, write the logic).
 4. Do not just outline the code, actually BUILD out the fully functional elements requested.
 5. IMPORTANT: Output ONLY the raw HTML string. Do NOT wrap your output in markdown code block formatting (NO \`\`\`html and NO \`\`\`). The very first character of your response must be <`;
+
+    let userMessage = `Build a website based on these instructions:\n\n${transcriptText}`;
+
+    if (currentEditContent) {
+        systemPrompt = `You are an Expert Full-Stack Web Developer modifying an EXISTING single-file HTML website.
+Your objective is to read the existing HTML/CSS/JS and apply the user's requested modifications perfectly.
+
+Requirements for your output:
+1. Return the FULL, complete, modified HTML document. Do not just return snippets or diffs. Return the entire ` + `<!DOCTYPE html>` + ` document.
+2. Ensure you keep all existing functionality unless requested otherwise.
+3. Make sure the styling remains cohesive and premium.
+4. IMPORTANT: Output ONLY the raw HTML string. Do NOT wrap your output in markdown code block formatting (NO \`\`\`html and NO \`\`\`). The very first character of your response must be <`;
+
+        userMessage = `Here is the EXISTING website code:\n\n${currentEditContent}\n\n=== END EXISTING CODE ===\n\nNow, modify this code based on the following instructions: ${transcriptText}`;
+    }
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
@@ -208,7 +298,7 @@ Requirements for your output:
             model: "gpt-4o",
             messages: [
                 { role: "system", content: systemPrompt },
-                { role: "user", content: `Build a website based on these instructions:\n\n${transcriptText}` }
+                { role: "user", content: userMessage }
             ],
             temperature: 0.7
         })
@@ -230,15 +320,32 @@ Requirements for your output:
 // PIPELINE 4: PUBLISHING (GitHub REST API)
 // ==========================================
 async function publishToGitHub(fileContent) {
-    // Scaffold file name dynamically (e.g., project-1234.html)
-    const timestampId = Math.floor(Date.now() / 1000);
-    const filename = `project-${timestampId}.html`;
+    // If we are editing, use the existing filename. Otherwise, create a new one.
+    let filename = currentEditFilename;
+    if (!filename) {
+        const timestampId = Math.floor(Date.now() / 1000);
+        filename = `project-${timestampId}.html`;
+    }
 
     const path = GITHUB_TARGET_FOLDER ? `${GITHUB_TARGET_FOLDER}/${filename}` : filename;
     const apiUrl = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${path}`;
 
     // Base64 encode preserving UTF-8
     const encodedContent = btoa(unescape(encodeURIComponent(fileContent)));
+
+    const commitMessage = currentEditFilename ?
+        `fix: autonomous AI update to ${filename}` :
+        `feat: autonomous AI deployment of ${filename}`;
+
+    const requestBody = {
+        message: commitMessage,
+        content: encodedContent
+    };
+
+    // If we fetched an existing file, we MUST include its SHA to overwrite it
+    if (currentEditSha) {
+        requestBody.sha = currentEditSha;
+    }
 
     const response = await fetch(apiUrl, {
         method: "PUT",
@@ -247,10 +354,7 @@ async function publishToGitHub(fileContent) {
             "Content-Type": "application/json",
             "Accept": "application/vnd.github.v3+json"
         },
-        body: JSON.stringify({
-            message: `feat: autonomous AI deployment of ${filename}`,
-            content: encodedContent
-        })
+        body: JSON.stringify(requestBody)
     });
 
     if (!response.ok) {
