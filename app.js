@@ -6,7 +6,7 @@
 let OPENAI_API_KEY = sessionStorage.getItem("openai_key") || "";
 let GITHUB_PAT = sessionStorage.getItem("github_pat") || "";
 let GITHUB_REPO_OWNER = sessionStorage.getItem("github_owner") || "LukasPresti";
-let GITHUB_REPO_NAME = sessionStorage.getItem("github_repo") || "is322Midterm";
+let GITHUB_REPO_NAME = sessionStorage.getItem("github_repo") || "IS322midterm-2";
 // The specific folder where the generated websites will be pushed. 
 const GITHUB_TARGET_FOLDER = "projects";
 

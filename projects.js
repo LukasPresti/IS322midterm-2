@@ -9,7 +9,7 @@ const errorMessage = document.getElementById("error-message");
 // Credentials (Retrieved from session storage if they exist)
 let GITHUB_PAT = sessionStorage.getItem("github_pat") || "";
 let GITHUB_REPO_OWNER = sessionStorage.getItem("github_owner") || "LukasPresti";
-let GITHUB_REPO_NAME = sessionStorage.getItem("github_repo") || "is322Midterm";
+let GITHUB_REPO_NAME = sessionStorage.getItem("github_repo") || "IS322midterm-2";
 const GITHUB_TARGET_FOLDER = "projects";
 
 window.addEventListener('DOMContentLoaded', async () => {
