@@ -12,7 +12,7 @@
 <body class="builder-body">
     <div class="background-effects">
         <div class="blob blob-1"></div>
-        <div class="blob blob-3"></div>
+        <div class="blob blob-2"></div>
     </div>
 
     <!-- Configuration Modal -->
@@ -62,6 +62,20 @@
             <header class="builder-header">
                 <h1>AI Website Architect</h1>
                 <p>Describe the website you want to build. The AI will code it and push it live.</p>
+                
+                <div class="usage-guide glass-panel mt-4" style="text-align: left; padding: 1.5rem; border-left: 4px solid var(--accent-primary);">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.2rem;">What is this tool?</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; line-height: 1.6;">
+                        This voice-to-website POC allows you to instantly generate and deploy front-end web pages using only your voice. It leverages OpenAI's Whisper for transcription, an LLM for UI code generation, and the GitHub API to deploy your newly created site live to GitHub Pages.
+                    </p>
+                    <h3 style="margin-bottom: 1rem; font-size: 1.2rem;">How to use properly:</h3>
+                    <ol style="color: var(--text-muted); padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+                        <li style="margin-bottom: 0.5rem;">Click <strong>Start Recording</strong> and clearly describe the layout, styling, and content of the site you envision.</li>
+                        <li style="margin-bottom: 0.5rem;">Click <strong>Stop & Build</strong>. The tool will process your audio and construct a functional webpage.</li>
+                        <li style="margin-bottom: 0.5rem;">Monitor the <strong>Build Logs</strong> to track progress and view the <strong>Live HTML Preview</strong> on the right.</li>
+                        <li>Upon success, use the provided link to view your newly deployed web application!</li>
+                    </ol>
+                </div>
             </header>
 
             <div class="controls-panel">
