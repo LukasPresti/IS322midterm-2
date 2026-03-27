@@ -217,6 +217,16 @@ export default function BuilderUI() {
           <header className="builder-header">
             <h1>AI Website Architect</h1>
             <p>Describe the website you want to build or iterate upon. The AI will code it and push it live.</p>
+
+            <div className="usage-guide glass-panel mt-4" style={{ textAlign: "left", padding: "1.5rem", borderLeft: "4px solid var(--accent-primary)" }}>
+              <h3 style={{ marginBottom: "1rem", fontSize: "1.2rem", fontWeight: "600", color: "#fff" }}>How to use properly:</h3>
+              <ol style={{ color: "var(--text-muted)", paddingLeft: "1.2rem", fontSize: "0.95rem", lineHeight: "1.6" }}>
+                <li style={{ marginBottom: "0.5rem" }}>Click <strong>Start Recording</strong> and clearly describe your site.</li>
+                <li style={{ marginBottom: "0.5rem" }}>Click <strong>Stop & Build</strong> to send the audio to the server.</li>
+                <li style={{ marginBottom: "0.5rem" }}>The AI will structure the files, compile the code, and push it live securely via your GitHub.</li>
+                <li><strong>Iterative Mode:</strong> If you don't like the result, just press Record again and say <em>&quot;Make the background blue&quot;</em> to update the live site!</li>
+              </ol>
+            </div>
           </header>
 
           <div className="controls-panel">
