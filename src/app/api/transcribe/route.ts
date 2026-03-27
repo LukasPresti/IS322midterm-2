@@ -31,7 +31,9 @@ export async function POST(req: Request) {
     if (whisperRes.status === 429 || whisperRes.status === 402) {
       return NextResponse.json({ error: "The OpenAI API key has run out of tokens (Insufficient Quota). Please top up your credits." }, { status: 429 });
     }
-    return NextResponse.json({ error: "Failed to transcribe audio" }, { status: 500 });
+    const errorBody = await whisperRes.text();
+    console.error("Whisper API Error:", whisperRes.status, errorBody);
+    return NextResponse.json({ error: `Failed to transcribe: ${whisperRes.status} Error. Did you add OPENAI_API_KEY to Vercel?` }, { status: 500 });
   }
 
   const transcriptData = await whisperRes.json();
