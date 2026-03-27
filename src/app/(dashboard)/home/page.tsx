@@ -23,7 +23,7 @@ export default function DashboardHome() {
   return (
     <div className="home-dashboard fade-in visible" style={{ marginTop: "1rem" }}>
       <header className="dashboard-hero glass-panel">
-        <div className="hero-content">
+        <div className="hero-content" style={{ position: "relative", zIndex: 2 }}>
           <h1 style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>Welcome back to Architect</h1>
           <p style={{ color: "var(--text-muted)", marginBottom: "2.5rem", fontSize: "1.1rem" }}>
             Ready to design something new? Turn your voice directly into production-grade React & CSS.
@@ -88,6 +88,8 @@ export default function DashboardHome() {
           height: 200%;
           background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
           transform: rotate(-15deg);
+          pointer-events: none;
+          z-index: 1;
         }
 
         .hero-illustration {
