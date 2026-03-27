@@ -2,7 +2,10 @@ import { getAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
+  
   const session = await getAuthSession();
   
   if (!session?.user?.id) {
@@ -10,7 +13,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   }
 
   const existingProject = await prisma.project.findUnique({
-    where: { id: params.id },
+    where: { id: id },
   });
 
   if (!existingProject) {
@@ -27,8 +30,11 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
+
   const session = await getAuthSession();
   
   if (!session?.user?.id) {
@@ -39,7 +45,7 @@ export async function PATCH(
 
   // Ensure the user actually owns the project before updating
   const existingProject = await prisma.project.findUnique({
-    where: { id: params.id },
+    where: { id: id },
   });
 
   if (!existingProject || existingProject.userId !== session.user.id) {
@@ -47,7 +53,7 @@ export async function PATCH(
   }
 
   const updatedProject = await prisma.project.update({
-    where: { id: params.id },
+    where: { id: id },
     data: { isPublic },
   });
 
@@ -56,8 +62,11 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
+
   const session = await getAuthSession();
   
   if (!session?.user?.id) {
@@ -65,7 +74,7 @@ export async function DELETE(
   }
 
   const existingProject = await prisma.project.findUnique({
-    where: { id: params.id },
+    where: { id: id },
   });
 
   if (!existingProject || existingProject.userId !== session.user.id) {
@@ -73,7 +82,7 @@ export async function DELETE(
   }
 
   await prisma.project.delete({
-    where: { id: params.id },
+    where: { id: id },
   });
 
   return NextResponse.json({ success: true });
