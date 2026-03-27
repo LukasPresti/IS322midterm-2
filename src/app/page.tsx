@@ -72,7 +72,7 @@ export default function Home() {
                 </p>
 
                 <div className="project-actions flex gap-4 mt-4">
-                  <Link href="/builder" className="btn primary-btn launch-btn flex-1">
+                  <Link href="/home" className="btn primary-btn launch-btn flex-1">
                     Launch App
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

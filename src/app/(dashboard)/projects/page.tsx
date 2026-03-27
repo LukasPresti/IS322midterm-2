@@ -8,7 +8,7 @@ export default async function ProjectsPage() {
   const session = await getAuthSession();
 
   if (!session?.user?.id) {
-    redirect("/profile");
+    redirect("/home");
   }
 
   const projects = await prisma.project.findMany({
@@ -23,18 +23,7 @@ export default async function ProjectsPage() {
         <div className="blob blob-2" style={{ left: "60%", background: "var(--accent-primary)" }}></div>
       </div>
 
-      <nav className="navbar solid-nav">
-        <Link href="/" className="back-link">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          Back to Portfolio
-        </Link>
-        <div className="logo">My Projects<span className="highlight">.</span></div>
-        <div className="nav-links">
-          <Link href="/community" style={{ color: "var(--text-muted)", marginLeft: "1rem" }}>Community Board</Link>
-        </div>
-      </nav>
+
 
       <main className="gallery-main fade-in visible">
         <div className="gallery-header">

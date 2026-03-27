@@ -22,18 +22,7 @@ export default async function CommunityPage() {
         <div className="blob blob-3" style={{ background: "var(--accent-primary)" }}></div>
       </div>
 
-      <nav className="navbar solid-nav">
-        <Link href="/" className="back-link">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          Back to Portfolio
-        </Link>
-        <div className="logo">Community Board<span className="highlight">.</span></div>
-        <div className="nav-links">
-          <Link href="/projects" style={{ color: "var(--text-muted)", marginLeft: "1rem" }}>My Projects</Link>
-        </div>
-      </nav>
+
 
       <main className="gallery-main fade-in visible">
         <div className="gallery-header" style={{ marginBottom: "3rem" }}>

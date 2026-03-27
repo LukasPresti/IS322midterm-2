@@ -83,17 +83,7 @@ export default function ProfilePage() {
         <div className="blob blob-3"></div>
       </div>
 
-      <nav className="navbar solid-nav">
-        <Link href="/" className="back-link">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          Back to Portfolio
-        </Link>
-        <div className="logo cursor-pointer" onClick={() => signOut()}>
-          Sign Out<span className="highlight">.</span>
-        </div>
-      </nav>
+
 
       <main className="builder-main fade-in visible" style={{ gridTemplateColumns: "1fr", maxWidth: 800 }}>
         <div className="builder-container glass-panel">
@@ -144,7 +134,7 @@ export default function ProfilePage() {
           </form>
 
           <div className="mt-4" style={{ textAlign: "center", width: "100%", marginTop: "2rem" }}>
-             <Link href="/builder" className="btn secondary-btn">Proceed to AI Builder &rarr;</Link>
+             <Link href="/home" className="btn secondary-btn">Proceed to Dashboard &rarr;</Link>
           </div>
         </div>
       </main>
